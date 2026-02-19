@@ -1,4 +1,8 @@
+const Groq = require("groq-sdk");
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 const express = require('express');
+
 const cors = require('cors');
 const { OpenAI } = require('openai');
 
@@ -34,3 +38,4 @@ app.post('/chat', async (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`السيرفر يعمل على http://localhost:${PORT}`));
+module.exports = app;
