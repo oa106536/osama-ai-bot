@@ -7,7 +7,8 @@ app.use(express.json());
 app.use(cors());
 
 // ضع مفتاح الـ API الخاص بك هنا (مخفي في السيرفر)
-const API_KEY = "process.env.GROQ_API_KEY";
+// استبدل السطر القديم بهذا السطر حرفياً
+const apiKey = process.env.GROQ_API_KEY;
 
 const client = new OpenAI({
   apiKey: API_KEY,
