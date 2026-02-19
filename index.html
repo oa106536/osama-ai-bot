@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Osama AI | البوت الذكي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #000; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 95%; max-width: 500px; height: 80vh; background: #111; border-radius: 20px; display: flex; flex-direction: column; border: 1px solid #00ffcc; box-shadow: 0 0 30px rgba(0, 255, 204, 0.2); overflow: hidden; }
+        #header { padding: 15px; background: #00ffcc; color: #000; text-align: center; font-weight: bold; }
+        #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px; border-radius: 12px; max-width: 85%; line-height: 1.5; font-size: 0.95rem; }
+        .user { align-self: flex-start; background: #00ffcc; color: #000; border-bottom-right-radius: 2px; }
+        .bot { align-self: flex-end; background: #222; border-right: 4px solid #00ffcc; border-bottom-left-radius: 2px; }
+        .input-area { padding: 15px; display: flex; gap: 10px; border-top: 1px solid #222; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; outline: none; }
+        button { background: #00ffcc; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .typing { font-size: 0.8rem; color: #00ffcc; margin-top: -10px; margin-right: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="header">osama-ai-bot🤖</div>
+        <div id="messages">
+            <div class="msg bot">مرحباً! أنا         <div id="header">osama-ai-bot🤖</div>، كيف أساعدك اليوم؟</div>
+        </div>
+        <div id="typing-indicator" class="typing">البوت يكتب الآن...</div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter') send()">
+            <button onclick="send()">إرسال</button>
+        </div>
+    </div>
+
+    <script>
+        async function send() {
+            const input = document.getElementById('user-input');
+            const messages = document.getElementById('messages');
+            const typing = document.getElementById('typing-indicator');
+            const text = input.value.trim();
+            if(!text) return;
+
+            messages.innerHTML += `<div class="msg user">${text}</div>`;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+            typing.style.display = 'block';
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+                messages.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+            } catch {
+                messages.innerHTML += `<div class="msg bot">عذراً، تأكد من تشغيل السيرفر!</div>`;
+            }
+            typing.style.display = 'none';
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+</body>
+</html>
